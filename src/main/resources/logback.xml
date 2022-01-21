@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!--<property name="logging.path" value="/home/admin/log/idmaker-service"/>-->
+    <property name="logging.path" value="${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}"/>
+
+    <appender name="PROJECT-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.path}/application.log</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{32}[%file:%line] -&gt; %msg%n</pattern>
+            <immediateFlush>false</immediateFlush>
+        </encoder>
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <fileNamePattern>${logging.path}/application.log.%d{yyyy-MM-dd}.log.gz</fileNamePattern>-->
+<!--            <maxHistory>7</maxHistory>-->
+<!--        </rollingPolicy>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.path}/application-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1024MB</maxFileSize>
+            <maxHistory>3</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="innerLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <File>${logging.path}/inner/inner.log</File>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.path}/inner/inner-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1024MB</maxFileSize>
+            <maxHistory>3</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <FileNamePattern>${logging.path}/inner/inner.log.%d{yyyy-MM-dd}</FileNamePattern>-->
+<!--            <maxHistory>10</maxHistory>-->
+<!--        </rollingPolicy>-->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg%n</pattern>
+        </layout>
+    </appender>
+    <logger name="cn.com.duiba.tuia.activity.center.common.innerLog.InnerLogService" level="INFO" additivity="false">
+        <appender-ref ref="innerLog" />
+    </logger>
+
+    <appender name="innerExtLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <File>${logging.path}/inner/inner_ext_02.log</File>
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            <FileNamePattern>${logging.path}/inner/inner_ext_02.log.%d{yyyy-MM-dd}</FileNamePattern>-->
+<!--            <maxHistory>10</maxHistory>-->
+<!--        </rollingPolicy>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.path}/inner/inner_ext_02-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1024MB</maxFileSize>
+            <maxHistory>3</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%msg%n</pattern>
+        </layout>
+    </appender>
+    <logger name="cn.com.duiba.tuia.activity.center.common.innerLog.InnerExtLogService" level="INFO" additivity="false">
+        <appender-ref ref="innerExtLog" />
+    </logger>
+
+    <appender name="PROJECT-CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date [%thread] %-5level %logger{20} [%file:%line] - %msg%n</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
+
+    <!--<logger name="java.sql" additivity="false" level="INFO">-->
+    <!--<appender-ref ref="PROJECT-SQL"/>-->
+    <!--</logger>-->
+
+    <logger name="jdbc.connection" level="ERROR"/>
+    <logger name="jdbc.audit" level="ERROR"/>
+    <logger name="jdbc.resultset" level="ERROR"/>
+    <logger name="java.sql.PreparedStatement" level="ERROR"/>
+
+    <logger name="net.sf.json.JSONObject" level="ERROR"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="com.alibaba.druid.pool.vendor" level="ERROR"/>
+    <!--<logger name="cn.com.duiba.tuia.activity.center.biz.dao.activity" level="debug"/>-->
+
+    <logger name="jdbc.sqlonly" additivity="false" level="INFO">
+        <!-- <appender-ref ref="Sql" />  -->
+        <appender-ref ref="PROJECT-CONSOLE"/>
+    </logger>
+    <logger name="druid.sql.Statement" additivity="false" level="INFO">
+        <!-- <appender-ref ref="Sql" />  -->
+        <appender-ref ref="PROJECT-CONSOLE"/>
+    </logger>
+
+    <logger name="cn.com.duiba.wolf.log" additivity="false" level="ERROR">
+        <appender-ref ref="PROJECT-CONSOLE"/>
+    </logger>
+
+    <logger name="com.alibaba.dubbo" level="WARN"/>
+    <logger name="cn.com.duiba" level="INFO"/>
+
+    <logger name="sdk.biz.err" level="off"/>
+
+    <logger name="cn.tuia.tools.log" level="DEBUG"/>
+
+    <root level="WARN">
+        <appender-ref ref="PROJECT-FILE"/>
+        <appender-ref ref="PROJECT-CONSOLE"/>
+        <!--<appender-ref ref="ERROR-CODE-FILE"/>-->
+    </root>
+
+</configuration>
